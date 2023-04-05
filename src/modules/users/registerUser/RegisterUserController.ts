@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
-import { AppError } from "../../../errors/AppError";
 import { RegisterUserService } from "./RegisterUserService";
+import * as z from "zod";
+
+const registerUserSchema = z.object({
+	email: z.string().email(),
+	password: z.string(),
+	name: z.string(),
+});
 
 export class RegisterUserController {
 	async handle(request: Request, response: Response): Promise<Response> {
-		const { name, email, password } = request.body;
+		const { name, email, password } = registerUserSchema.parse(request.body);
 
 		const registerUserService = new RegisterUserService();
 
