@@ -10,14 +10,6 @@ interface IAuthenticateRequest {
 
 export class AuthenticateUserService {
   async execute({email, password}: IAuthenticateRequest): Promise<string> {
-    if (!email) {
-			throw new AppError("Email is required!");
-		}
-
-		if (!password) {
-			throw new AppError("Password is required!");
-		}
-
 		const userModel = await User.findOne( { email: email });
 
 		if (!userModel) {
@@ -35,6 +27,5 @@ export class AuthenticateUserService {
     });
 
     return token;
-	
   }
 }
