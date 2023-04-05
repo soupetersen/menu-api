@@ -9,23 +9,25 @@ interface IAuthenticateRequest {
 }
 
 export class AuthenticateUserService {
-  async execute({email, password}: IAuthenticateRequest): Promise<string> {
-		const userModel = await User.findOne( { email: email });
+  async execute({email, password}: IAuthenticateRequest): Promise<{token: string}> {
+		const userModel = await User.findOne({ email }).catch((err) => {
+			throw new AppError("Error to find user!");
+		});
 
 		if (!userModel) {
 			throw new AppError("User does not exists!");
 		}
 
-		const passworkMatch = compare(password, userModel.password!);
+		const passworkMatch = await compare(password, userModel.password);
 
 		if (!passworkMatch) {
 			throw new AppError("Password does not match!");
 		}
 
-    const token = jwt.sign({ id: userModel.id }, process.env.JWT_SECRET!, {
+    const token = jwt.sign({ id: userModel.id }, process.env.JWT_SECRET ?? "s3cr3t", {
       expiresIn: "1d",
     });
 
-    return token;
+    return { token };
   }
 }

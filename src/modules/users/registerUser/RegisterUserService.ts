@@ -9,8 +9,10 @@ interface IRegisterRequest {
 }
 
 export class RegisterUserService {
-  async execute({name, email, password}: IRegisterRequest): Promise<void> {
-		const userAlreadyExists = await User.exists({ email: email });
+  async execute({name, email, password}: IRegisterRequest): Promise<{ id: string }> {
+		const userAlreadyExists = await User.exists({ email: email }).catch((err) => {
+        throw new AppError("Error to find user!");
+    });
 
 		if (userAlreadyExists) {
 			throw new AppError("User already exists!");
@@ -18,14 +20,12 @@ export class RegisterUserService {
 
 		const passwordHash = await hash(password, 8);
 
-    try {
-        await User.create({
-          name,
-          email,
-          password: passwordHash,
-        });
-    } catch (err) {
-      throw new AppError("Error: " + err);
-    }
+    const user = await User.create({
+      name,
+      email,
+      password: passwordHash,
+    });
+
+    return { id: user.id.toString() };
   }
 }
