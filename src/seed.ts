@@ -2,16 +2,18 @@ import { connect } from "mongoose";
 import { Category } from "./models/Category";
 import { Product } from "./models/Product";
 import { categories } from "./utils/categories";
-import "dotenv/config";
 import { products } from "./utils/products";
+import env from "dotenv";
+import path from "path";
 
-console.log("Starting");
+const reqPath = path.join(__dirname, '..');
+env.config({
+  path: `${reqPath}/.env.local`
+});
 
 
 (async () => {
-  await connect(
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@petersen.faehj.mongodb.net/menu_test?retryWrites=true&w=majority`
-  ).then(() => {
+  await connect(process.env.DATABASE_URL ?? "").then(() => {
     console.log("Connected to database for seed");
   });
 
@@ -23,7 +25,7 @@ console.log("Starting");
 
 async function seedCategories() {
   categories.forEach(async ({ name }) => {
-    const categoryExists = await Category.findOne({ name });
+    const categoryExists = await Category.exists({ name });
     if (!categoryExists) {
       await Category.create({ name });
     }
@@ -32,8 +34,7 @@ async function seedCategories() {
 
 async function seedProducts() {
   products.forEach(async ({ name, price, qty, categories: productsCategories }) => {
-    await Product.deleteMany();
-    const productExists = await Product.findOne({ name });
+    const productExists = await Product.exists({ name });
     if (!productExists) {
       const categoriesIds = await Promise.all(
         productsCategories.map(async ({ name }) => {
@@ -41,10 +42,7 @@ async function seedProducts() {
           return result?._id;
         })
       );
-
-      console.log("categoriesIds", categoriesIds);
       const result = await Product.create({ name, price, qty, categories: categoriesIds });
-      console.log("created", result); 
     }
   });
 }

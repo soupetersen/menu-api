@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
+import "express-async-errors";
 import { AppError } from "./errors/AppError";
 import env from "dotenv";
-import "express-async-errors";
 import { router } from "./routes";
 import path from "path";
 
@@ -9,7 +9,6 @@ const reqPath = path.join(__dirname, '..');
 env.config({
 	path: process.env.NODE_ENV === "development" ? `${reqPath}/.env.local` : `${reqPath}/.env`,
 })
-
 
 export const app = express();
 
