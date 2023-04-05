@@ -10,17 +10,11 @@ export class AuthenticateUserController {
 
 		const authenticateUserService = new AuthenticateUserService();
 
-		try {
-			const token = await authenticateUserService.execute({
-				email,
-				password,
-			});
-			
-			return response.json(token);
-			
-		} catch (err) {
-			throw new AppError("Error: " + err);
-		}
+		const token = await authenticateUserService.execute({
+			email,
+			password,
+		});
 		
+		return response.json(token);
 	}
 }

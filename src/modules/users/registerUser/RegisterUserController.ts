@@ -8,16 +8,12 @@ export class RegisterUserController {
 
 		const registerUserService = new RegisterUserService();
 
-		try {
-			await registerUserService.execute({
-				name,
-				email,
-				password,
-			});
-		} catch (err) {
-			throw new AppError("Error: " + err);
-		}	
-
+		await registerUserService.execute({
+			name,
+			email,
+			password,
+		});
+	
 		return response.status(201).send();
 	}
 }
