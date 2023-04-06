@@ -33,7 +33,7 @@ Zod foi utilizado para validar os campos das requisições
 Crie um banco de dados em https://account.mongodb.com e pegue uma url de conexão,
 algo parecido com isso: mongodb+srv://user:password@user.faehj.mongodb.net/database?retryWrites=true&w=majority, e coloque essa url em DATABASE_URL no arquivo .env.local
 
-Adicione a chave secretea em JWT_SECRET no arquivo .env.local
+Adicione a chave secreta em JWT_SECRET no arquivo .env.local
 
 <br/>
 
