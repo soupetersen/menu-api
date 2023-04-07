@@ -49,6 +49,12 @@ Seed database:
 pnpm seed
 ```
 
+Run tests:
+
+```bash
+pnpm test
+```
+
 Run dev server:
 
 ```bash
